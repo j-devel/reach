@@ -14,21 +14,10 @@ GIT
   specs:
     ecdsa (1.3.0)
 
-PATH
-  remote: ../minerva/celluloid-io
-  specs:
-    celluloid-io (0.17.3)
-      nio4r (>= 1.1)
-
-PATH
-  remote: ../minerva/coap
-  specs:
-    coap (0.1.5.pre)
-      celluloid-io (~> 0.17.3)
-      resolv-ipv6favor (~> 0)
-
-PATH
-  remote: ../minerva/ruby-openssl
+GIT
+  remote: https://github.com/CIRALabs/ruby-openssl.git
+  revision: 191bb6c13368ed84f2c3d1895032f721c63a4aed
+  branch: ies-cms-dtls
   specs:
     openssl (2.2.0.pre.mcr1)
       ipaddr
@@ -178,7 +167,6 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    resolv-ipv6favor (0.0.0)
     rexml (3.2.5)
     rspec-core (3.9.3)
       rspec-support (~> 3.9.3)
@@ -237,9 +225,7 @@ DEPENDENCIES
   cbor
   cbor-diag
   celluloid (~> 0.17.0)
-  celluloid-io!
   chariwt!
-  coap!
   ecdsa!
   ipaddress
   jbuilder (~> 2.5)

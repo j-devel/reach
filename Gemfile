@@ -22,6 +22,11 @@ gem "json", ">= 2.3.0"
 
 gem "websocket-extensions", ">= 0.1.5"
 
+# @@ xubuntu 20.04
+# $ cd reach
+# $ sudo apt install ruby-full
+# $ bundle2.7 install --path vendor/bundle
+# $ bundle2.7 exec rake reach:enroll_http_pledge
 
 # Use sqlite3 as the database for Active Record
 gem 'sqlite3', "~> 1.3.6"
@@ -30,21 +35,21 @@ gem 'ecdsa',   :git => 'https://github.com/AnimaGUS-minerva/ruby_ecdsa.git', :br
 
 gem 'rspec-rails', '~> 3.6'
 
-gem 'openssl', :path => '../minerva/ruby-openssl'
-#gem 'openssl', :git => 'https://github.com/CIRALabs/ruby-openssl.git', :branch => 'ies-cms-dtls'
+###gem 'openssl', :path => '../minerva/ruby-openssl'
+gem 'openssl', :git => 'https://github.com/CIRALabs/ruby-openssl.git', :branch => 'ies-cms-dtls'
 #gem 'chariwt', :path => '../chariwt'
 gem 'chariwt', :git => 'https://github.com/AnimaGUS-minerva/ChariWTs.git', :branch => 'v0.8.0'
 
 gem 'jwt'
 
 gem 'celluloid', "~> 0.17.0"
-gem 'celluloid-io', :path => '../minerva/celluloid-io'
+###gem 'celluloid-io', :path => '../minerva/celluloid-io'
 #gem 'celluloid-io', :git => 'git@github.com:AnimaGUS-minerva/celluloid-io.git', :submodules => true, :branch => '0.17-dtls'
 
 # Use Puma as the app server
 #gem 'puma', '~> 3.0'
 
-gem 'coap', :path => '../minerva/coap'
+###gem 'coap', :path => '../minerva/coap'
 #gem 'coap', :git => 'git@github.com:AnimaGUS-minerva/coap.git', :branch => 'dtls-client'
 gem 'cbor'
 gem 'cbor-diag'
