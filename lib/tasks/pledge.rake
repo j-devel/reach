@@ -74,6 +74,7 @@ namespace :reach do
   task :enroll_http_pledge => :environment do
     setup_voucher_request
 
+    exit 99 # !!!!
     client = Pledge.new
     client.jrc = @jrcurl
 
