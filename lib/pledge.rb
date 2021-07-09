@@ -1,6 +1,7 @@
 require 'pledge_keys'
 require 'net/http'
 require 'openssl'
+require 'ffi'
 
 URI::Generic.class_eval do
   def request_uri
@@ -141,6 +142,8 @@ class Pledge
   end
 
   def voucher_validate!(voucher)
+    puts "@@ TODO call into Rust !!!!"
+
     voucherPinnedName = voucher.try(:pinnedDomainCert).try(:subject).try(:to_s)
     voucherPinnedName ||= "unknown"
     puts "Voucher connects to #{voucherPinnedName}"

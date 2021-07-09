@@ -26,6 +26,19 @@ namespace :reach do
     end
   end
 
+  # https://github.com/alexcrichton/rust-ffi-examples/tree/master/ruby-to-rust
+  module Hello
+    extend FFI::Library
+    puts "@@ Hello -- Dir.pwd: #{Dir.pwd}"
+    ffi_lib '../../target/debug/libdouble_input.' + FFI::Platform::LIBSUFFIX
+    attach_function :double_input, [ :int ], :int
+  end
+
+  def test_ruby_to_rust
+    input = 4
+    output = Hello.double_input(input)
+    puts "@@ test_ruby_to_rust -- #{input} * 2 = #{output}"
+  end
 
   # generate an unsigned voucher request
   desc "construct a unsigned voucher request IDEVID=xx/PRODUCTID=zz, send to JRC=yy"
@@ -72,15 +85,25 @@ namespace :reach do
   # and send it to the appropriate Registrar.
   desc "enroll using HTTP to with IDEVID=xx/PRODUCTID=zz, send to JRC=yy"
   task :enroll_http_pledge => :environment do
+    puts "@@ enroll_http_pledge(): hello"
+
+    test_ruby_to_rust  # @@
+
     setup_voucher_request
 
     client = Pledge.new
     client.jrc = @jrcurl
 
+    puts "@@ before client.get_voucher()"
+    exit 99
+
     voucher = client.get_voucher(true)
     # now enroll using /simpleenroll
 
     exit 3 unless voucher
+
+    puts "@@ before client.voucher_validate!()"
+    #exit 99
 
     unless client.voucher_validate!(voucher)
       puts "Failed to validate voucher"
