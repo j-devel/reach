@@ -389,6 +389,7 @@ class Pledge
 
     request.body = smime
     request.content_type = 'application/json'
+    puts "@@ ⚠️ FIXME NoMethodError: undefined method `bytesize' for #<Hash:..."
     response = http_handler.request request # Net::HTTPResponse object
 
     voucher = nil

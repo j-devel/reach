@@ -95,7 +95,7 @@ namespace :reach do
     client.jrc = @jrcurl
 
     puts "@@ before client.get_voucher()"
-    exit 99
+#     exit 99
 
     voucher = client.get_voucher(true)
     # now enroll using /simpleenroll
@@ -103,7 +103,7 @@ namespace :reach do
     exit 3 unless voucher
 
     puts "@@ before client.voucher_validate!()"
-    #exit 99
+#     exit 99
 
     unless client.voucher_validate!(voucher)
       puts "Failed to validate voucher"
