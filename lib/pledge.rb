@@ -142,7 +142,12 @@ class Pledge
   end
 
   def voucher_validate!(voucher)
-    puts "@@ TODO call into Rust !!!!"
+
+    # TODO follow
+    #   `handle_voucher_response`
+    #     `process_content_type` !!!!
+    output = MinvervaXstd.voucher_validate(4)
+    puts "@@ output: #{output}"
 
     voucherPinnedName = voucher.try(:pinnedDomainCert).try(:subject).try(:to_s)
     voucherPinnedName ||= "unknown"

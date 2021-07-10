@@ -30,7 +30,7 @@ namespace :reach do
   module Hello
     extend FFI::Library
     puts "@@ Hello -- Dir.pwd: #{Dir.pwd}"
-    ffi_lib '../../target/debug/libdouble_input.' + FFI::Platform::LIBSUFFIX
+    ffi_lib '../../target/debug/libminerva_xstd.' + FFI::Platform::LIBSUFFIX
     attach_function :double_input, [ :int ], :int
   end
 
@@ -39,6 +39,16 @@ namespace :reach do
     output = Hello.double_input(input)
     puts "@@ test_ruby_to_rust -- #{input} * 2 = #{output}"
   end
+
+  #
+
+  module MinvervaXstd
+    extend FFI::Library
+    ffi_lib '../../target/debug/libminerva_xstd.' + FFI::Platform::LIBSUFFIX
+    attach_function :voucher_validate, [ :int ], :int
+  end
+
+  #
 
   # generate an unsigned voucher request
   desc "construct a unsigned voucher request IDEVID=xx/PRODUCTID=zz, send to JRC=yy"
