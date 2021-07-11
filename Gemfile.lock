@@ -1,13 +1,4 @@
 GIT
-  remote: https://github.com/AnimaGUS-minerva/ChariWTs.git
-  revision: 3933bdd59a14d3fe7821c345968edefaf54de5fb
-  branch: v0.8.0
-  specs:
-    chariwt (0.8.4)
-      cbor (~> 0.5.0)
-      ecdsa (~> 1.3.0)
-
-GIT
   remote: https://github.com/AnimaGUS-minerva/ruby_ecdsa.git
   revision: 64eb588befbf65fe58209d20d5a12da646077c5b
   branch: ecdsa_interface_openssl
@@ -21,6 +12,13 @@ GIT
   specs:
     openssl (2.2.0.pre.mcr1)
       ipaddr
+
+PATH
+  remote: ../chariwt
+  specs:
+    chariwt (0.8.4)
+      cbor (~> 0.5.0)
+      ecdsa (~> 1.3.0)
 
 PATH
   remote: ../minerva/celluloid-io
