@@ -33,23 +33,20 @@ namespace :reach do
     puts "@@ MinvervaXstd -- Dir.pwd: #{Dir.pwd}"
     ffi_lib '../../target/debug/libminerva_xstd.' + FFI::Platform::LIBSUFFIX
 
-    attach_function :double_input, [ :int ], :int
-    attach_function :voucher_validate, [ :pointer, :uint ], :bool
+    attach_function :rs_double_input, [ :int ], :int
+    attach_function :rs_voucher_validate, [ :pointer, :uint ], :bool
 
-    def self.test_ruby_to_rust  # https://github.com/alexcrichton/rust-ffi-examples/tree/master/ruby-to-rust
+    # https://github.com/alexcrichton/rust-ffi-examples/tree/master/ruby-to-rust
+    def self.test_ruby_to_rust
       input = 4
-      output = MinvervaXstd.double_input(input)
+      output = rs_double_input(input)
       puts "@@ test_ruby_to_rust -- #{input} * 2 = #{output}"
     end
 
-    def self.convert_image(data)  # https://github.com/ffi/ffi/wiki/Binary-data
-      memBuf = FFI::MemoryPointer.new(:char, data.bytesize) # Allocate memory sized to the data
-      memBuf.put_bytes(0, data)                             # Insert the data
-      voucher_validate(memBuf, data.size)                   # Call the C function
-    end
-    def self.convert_image_2(data)
+    # https://github.com/ffi/ffi/wiki/Binary-data
+    def self.voucher_validate(data)
       # https://www.rubydoc.info/github/ffi/ffi/FFI/MemoryPointer
-      voucher_validate(FFI::MemoryPointer.from_string(data), data.bytesize)
+      rs_voucher_validate(FFI::MemoryPointer.from_string(data), data.bytesize)
     end
   end
 
@@ -105,15 +102,13 @@ namespace :reach do
     # @@
     MinvervaXstd.test_ruby_to_rust
 
-#     File.open("tmp/voucher_00-d0-e5-02-00-2e.pkcs", "rb") do |f|
-     File.open("tmp/voucher_foo", "rb") do |f|
-       data = f.read
-       puts "@@ data.bytesize: #{data.bytesize}"
-       puts "@@ data.size: #{data.size}"
-       MinvervaXstd.convert_image(data)
-       MinvervaXstd.convert_image_2(data)
+    # @@
+     File.open("tmp/voucher_00-d0-e5-02-00-2e.pkcs", "rb") do |f|
+#     File.open("tmp/voucher_foo", "rb") do |f|
+       MinvervaXstd.voucher_validate(f.read)
      end
 
+    #
 
     setup_voucher_request
 
