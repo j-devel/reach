@@ -92,6 +92,20 @@ namespace :reach do
     client.enroll(true)
   end
 
+  desc "test Rust-based minerva implementation"
+  task :test_minverva_xstd => :environment do
+
+    MinvervaXstd.test_ruby_to_rust
+
+    # feed the cached raw voucher
+    File.open("tmp/voucher_00-d0-e5-02-00-2e.pkcs", "rb") do |f|
+      unless MinvervaXstd.voucher_validate(f.read)
+        puts "@@ WIP !!!! validate voucher in Rust"
+      end
+    end
+
+  end
+
   # generate a voucher request with the
   # proximity-registrar-cert filled in
   # and send it to the appropriate Registrar.
@@ -99,24 +113,13 @@ namespace :reach do
   task :enroll_http_pledge => :environment do
     puts "@@ enroll_http_pledge(): hello"
 
-    # @@
-    MinvervaXstd.test_ruby_to_rust
-
-    # @@
-     File.open("tmp/voucher_00-d0-e5-02-00-2e.pkcs", "rb") do |f|
-#     File.open("tmp/voucher_foo", "rb") do |f|
-       MinvervaXstd.voucher_validate(f.read)
-     end
-
-    #
-
     setup_voucher_request
 
     client = Pledge.new
     client.jrc = @jrcurl
 
     puts "@@ before client.get_voucher()"
-#     exit 99
+#    exit 99
 
     voucher = client.get_voucher(true)
     # now enroll using /simpleenroll
@@ -124,7 +127,12 @@ namespace :reach do
     exit 3 unless voucher
 
     puts "@@ before client.voucher_validate!()"
-#     exit 99
+#    exit 99
+
+    raw_voucher = client.instance_variable_get(:@raw_voucher) # kludge
+    unless MinvervaXstd.voucher_validate(raw_voucher)
+      puts "@@ WIP !!!! validate voucher in Rust"
+    end
 
     unless client.voucher_validate!(voucher)
       puts "Failed to validate voucher"

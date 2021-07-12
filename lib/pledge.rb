@@ -142,13 +142,6 @@ class Pledge
   end
 
   def voucher_validate!(voucher)
-
-    # TODO follow
-    #   `handle_voucher_response`
-    #     `process_content_type` !!!!
-    output = MinvervaXstd.voucher_validate(4)
-    puts "@@ output: #{output}"
-
     voucherPinnedName = voucher.try(:pinnedDomainCert).try(:subject).try(:to_s)
     voucherPinnedName ||= "unknown"
     puts "Voucher connects to #{voucherPinnedName}"
@@ -318,7 +311,7 @@ class Pledge
         File.open("tmp/voucher_NEW.pkcs", "w") do |f|
           f.syswrite @raw_voucher
         end
-        puts "@@ handle_voucher_response(): wrote 'tmp/voucher_NEW.pkcs'"
+        puts "@@ handle_voucher_response(): wrote `@raw_voucher` to 'tmp/voucher_NEW.pkcs'"
       end
 
       puts "@@ handle_voucher_response(): before `process_content_type` -- ct: #{ct}"
@@ -327,7 +320,7 @@ class Pledge
         File.open("tmp/voucher_#{@voucher.serialNumber}.pkcs", "w") do |f|
           f.syswrite @raw_voucher
         end
-        puts "@@ handle_voucher_response(): wrote 'tmp/voucher_#{@voucher.serialNumber}.pkcs'"
+        puts "@@ handle_voucher_response(): wrote `@raw_voucher` to 'tmp/voucher_#{@voucher.serialNumber}.pkcs'"
       end
 
     when Net::HTTPInternalServerError
