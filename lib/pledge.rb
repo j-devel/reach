@@ -316,6 +316,12 @@ class Pledge
 
       puts "@@ handle_voucher_response(): before `process_content_type` -- ct: #{ct}"
       @voucher = process_content_type(ct, response.body, masa_pubkey)
+
+#       puts "@@ !! pinnedDomainCert: #{@voucher.pinnedDomainCert}"
+#       puts "@@ !! pinnedDomainCert.subject: #{@voucher.pinnedDomainCert.subject}"
+#       puts "@@ !! pinnedDomainCert.subject.to_s: #{@voucher.pinnedDomainCert.subject.to_s}"
+#       puts "@@ !! pinnedDomainCert.to_der: #{@voucher.pinnedDomainCert.to_der}"
+
       if saveto
         File.open("tmp/voucher_#{@voucher.serialNumber}.pkcs", "w") do |f|
           f.syswrite @raw_voucher

@@ -70,12 +70,14 @@ namespace :reach do
   desc "test Rust-based minerva implementation"
   task :test_minverva_xstd => :environment do
 
-    MinvervaXstd.test_ruby_to_rust
+    unless MinvervaXstd.ruby_to_rust == 8
+      puts "@@ test ruby_to_rust -- [fail]"
+    end
 
     # feed the cached raw voucher
-    File.open("tmp/voucher_00-d0-e5-02-00-2e.pkcs", "rb") do |f|
+    File.open("trentonio/voucher_00-d0-e5-02-00-2e.pkcs", "rb") do |f|
       unless MinvervaXstd.voucher_validate(f.read)
-        puts "@@ WIP !!!! validate voucher in Rust"
+        puts "@@ WIP !!!! validate voucher in Rust -- [fail]"
       end
     end
 
