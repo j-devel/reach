@@ -1,6 +1,7 @@
 # -*- ruby -*-
 
 require 'pledge'
+require '../../rb/minerva_xstd'
 
 namespace :reach do
 
@@ -25,32 +26,6 @@ namespace :reach do
       PledgeKeys.instance.idevid = @idevid
     end
   end
-
-  #
-
-  module MinvervaXstd
-    extend FFI::Library
-    puts "@@ MinvervaXstd -- Dir.pwd: #{Dir.pwd}"
-    ffi_lib '../../target/debug/libminerva_xstd.' + FFI::Platform::LIBSUFFIX
-
-    attach_function :rs_double_input, [ :int ], :int
-    attach_function :rs_voucher_validate, [ :pointer, :uint ], :bool
-
-    # https://github.com/alexcrichton/rust-ffi-examples/tree/master/ruby-to-rust
-    def self.test_ruby_to_rust
-      input = 4
-      output = rs_double_input(input)
-      puts "@@ test_ruby_to_rust -- #{input} * 2 = #{output}"
-    end
-
-    # https://github.com/ffi/ffi/wiki/Binary-data
-    def self.voucher_validate(data)
-      # https://www.rubydoc.info/github/ffi/ffi/FFI/MemoryPointer
-      rs_voucher_validate(FFI::MemoryPointer.from_string(data), data.bytesize)
-    end
-  end
-
-  #
 
   # generate an unsigned voucher request
   desc "construct a unsigned voucher request IDEVID=xx/PRODUCTID=zz, send to JRC=yy"
