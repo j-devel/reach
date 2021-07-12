@@ -318,12 +318,16 @@ class Pledge
         File.open("tmp/voucher_NEW.pkcs", "w") do |f|
           f.syswrite @raw_voucher
         end
+        puts "@@ handle_voucher_response(): wrote 'tmp/voucher_NEW.pkcs'"
       end
+
+      puts "@@ handle_voucher_response(): before `process_content_type` -- ct: #{ct}"
       @voucher = process_content_type(ct, response.body, masa_pubkey)
       if saveto
         File.open("tmp/voucher_#{@voucher.serialNumber}.pkcs", "w") do |f|
           f.syswrite @raw_voucher
         end
+        puts "@@ handle_voucher_response(): wrote 'tmp/voucher_#{@voucher.serialNumber}.pkcs'"
       end
 
     when Net::HTTPInternalServerError
