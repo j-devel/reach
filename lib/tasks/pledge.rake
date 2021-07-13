@@ -75,7 +75,9 @@ namespace :reach do
     end
 
     # feed the cached raw voucher
-    File.open("trentonio/voucher_00-d0-e5-02-00-2e.pkcs", "rb") do |f|
+#     raw_voucher = "trentonio/voucher_00-d0-e5-02-00-2e.pkcs"  # cms+json
+    raw_voucher = "../chariwt/spec/files/voucher_jada123456789.vch"  # cose
+    File.open(raw_voucher, "rb") do |f|
       unless MinvervaXstd.voucher_validate(f.read)
         puts "@@ WIP !!!! validate voucher in Rust -- [fail]"
       end
