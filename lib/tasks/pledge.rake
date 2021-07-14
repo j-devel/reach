@@ -5,6 +5,11 @@ require '../../rb/minerva_xstd'
 
 namespace :reach do
 
+  desc "test `minerva_xstd` implementation"
+  task :test_minerva_xstd => :environment do
+    MinervaXstd.run_all_tests
+  end
+
   def setup_voucher_request
     @idevid     = ENV['IDEVID']
     @productid  = ENV['PRODUCTID']
@@ -67,70 +72,6 @@ namespace :reach do
     client.enroll(true)
   end
 
-  def test_ruby_to_rust
-    puts "==== 🧪 test_ruby_to_rust"
-    unless MinvervaXstd.ruby_to_rust == 8
-      puts "@@ test ruby_to_rust -- [fail]"
-    end
-  end
-
-  def test_validate_voucher_pkcs
-    puts "==== 🧪 test_validate_voucher_pkcs"
-
-    setup_voucher_request
-
-    raw_voucher = "trentonio/voucher_00-d0-e5-02-00-2e.pkcs"  # cms+json
-    File.open(raw_voucher, "rb") do |f|
-      rv = f.read
-
-      unless MinvervaXstd.voucher_validate(rv)
-        puts "@@ WIP !!!! validate voucher in Rust -- [fail]"
-      end
-
-      voucher = Chariwt::Voucher.from_pkcs7(rv, PledgeKeys.instance.vendor_ca)
-      puts "@@ pinnedDomainCert: #{voucher.pinnedDomainCert}"
-#       puts "@@ pinnedDomainCert.subject: #{voucher.pinnedDomainCert.subject}"
-#       puts "@@ pinnedDomainCert.subject.to_s: #{voucher.pinnedDomainCert.subject.to_s}"
-#       puts "@@ pinnedDomainCert.to_der: #{voucher.pinnedDomainCert.to_der}"
-    end
-  end
-
-  def test_validate_voucher_cose
-    puts "==== 🧪 test_validate_voucher_cose"
-
-    raw_voucher = "../chariwt/spec/files/voucher_jada123456789.vch"  # cose
-    File.open(raw_voucher, "rb") do |f|
-      rv = f.read
-
-      # Rust
-
-      unless MinvervaXstd.voucher_validate(rv)
-        puts "@@ WIP !!!! validate voucher in Rust -- [fail]"
-      end
-
-      # Ruby
-
-      puts "@@ Using the unmatching `raw_voucher`, `validate_from_chariwt()` of voucher.rb will fail for now; that's ok"
-
-      #==== via `client`
-#       client = Pledge.new
-#       voucher = client.process_constrained_content_type(65502, rv)
-      #==== via chariwt
-      voucher = Chariwt::Voucher.from_cbor_cose(rv, PledgeKeys.instance.masa_cert)
-      #====
-
-      puts "@@ pinnedDomainCert: #{voucher.pinnedDomainCert}"
-    end
-  end
-
-  desc "test Rust-based minerva implementation"
-  task :test_minverva_xstd => :environment do
-    test_ruby_to_rust
-
-#     test_validate_voucher_pkcs
-    test_validate_voucher_cose
-  end
-
   # generate a voucher request with the
   # proximity-registrar-cert filled in
   # and send it to the appropriate Registrar.
@@ -155,7 +96,7 @@ namespace :reach do
 #    exit 99
 
     raw_voucher = client.instance_variable_get(:@raw_voucher) # kludge
-    unless MinvervaXstd.voucher_validate(raw_voucher)
+    unless MinervaXstd.voucher_validate(raw_voucher)
       puts "@@ WIP !!!! validate voucher in Rust"
     end
 
