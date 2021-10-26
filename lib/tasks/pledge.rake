@@ -57,6 +57,8 @@ namespace :reach do
   # and send it to the appropriate Registrar.
   desc "enroll using CoAP to with IDEVID=xx/PRODUCTID=zz, send to JRC=yy"
   task :enroll_coap_pledge => :environment do
+    puts "@@ enroll_coap_pledge(): ^^"
+
     setup_voucher_request
 
     client = Pledge.new
@@ -77,15 +79,15 @@ namespace :reach do
   # and send it to the appropriate Registrar.
   desc "enroll using HTTP to with IDEVID=xx/PRODUCTID=zz, send to JRC=yy"
   task :enroll_http_pledge => :environment do
-    puts "@@ enroll_http_pledge(): hello"
+    puts "@@ enroll_http_pledge(): ^^"
 
     setup_voucher_request
 
     client = Pledge.new
     client.jrc = @jrcurl
 
-    puts "@@ before client.get_voucher()"
-#    exit 99
+    puts "@@ before client.get_voucher(); i.e. hitting the fountain VM"
+#     exit 99
 
     voucher = client.get_voucher(true)
     # now enroll using /simpleenroll

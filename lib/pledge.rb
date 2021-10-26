@@ -346,9 +346,12 @@ class Pledge
   end
 
   def get_voucher(saveto = nil, prior_voucher = nil)
+    puts "@@ [pledge.rb] get_voucher(): ^^"
+
     request = Net::HTTP::Post.new(jrc_uri)
 
     vr = setup_voucher_request(prior_voucher)
+    puts "@@ vr: #{vr}"
 
     # XXX refactor into fountain, as request-voucher-request does the same thing.
     # this needs to set the SSL client certificate somewhere.
@@ -356,6 +359,9 @@ class Pledge
 
     begin
       smime = vr.pkcs_sign_bin(PledgeKeys.instance.idevid_privkey)
+      puts "@@ smime.bytes.size: #{smime.bytes.size}"
+      puts "@@ hexdigest of smime 🔥: #{Digest::SHA256.hexdigest(smime)}"
+      # --> `token` in `requestvoucher_pkcs_signed()` of '/app/fountain/app/controllers/est_controller.rb'
     rescue OpenSSL::PKCS7::PKCS7Error
       puts "Some problem with signature: #{$!}"
       return nil
@@ -426,26 +432,28 @@ class Pledge
   end
 
   def get_constrained_voucher(saveto = nil)
+    puts "@@ [pledge.rb] get_constrained_voucher(): ^^"
 
     client = CoAP::Client.new(host: jrc_uri.hostname, scheme: jrc_uri.scheme)
-    client.client_cert = PledgeKeys.instance.idevid_pubkey
-    client.client_key  = PledgeKeys.instance.idevid_privkey
-    client.logger.level = Logger::DEBUG
-    client.logger.debug("STARTING")
-    client.client_cert = PledgeKeys.instance.idevid_pubkey
-
-    CoRE::CoAP::Transmission.client_debug=true
-
-    result = client.get('/.well-known/core?rt=ace.est')
-
-    links = CoRE::Link.parse(result.payload)
-
-    print "Ready?  "
-    ans = STDIN.gets
+#     puts"@@ client.peer_cert: #{client.peer_cert}"  # CoRE::CoAP::Client::NotDTLSSocket: CoRE::CoAP::Client::NotDTLSSocket
+#     client.client_cert = PledgeKeys.instance.idevid_pubkey
+#     client.client_key  = PledgeKeys.instance.idevid_privkey
+#     client.logger.level = Logger::DEBUG
+#     client.logger.debug("STARTING")
+#     client.client_cert = PledgeKeys.instance.idevid_pubkey
+#
+#     CoRE::CoAP::Transmission.client_debug=true
+#
+#     result = client.get('/.well-known/core?rt=ace.est')
+#
+#     links = CoRE::Link.parse(result.payload)
+#
+#     print "Ready?  "
+#     ans = STDIN.gets
     puts "proceeding..."
-
-    @rv_uri = jrc_uri.merge(links.uri)
-    @rv_uri.path += "/rv"
+#
+#     @rv_uri = jrc_uri.merge(links.uri)
+#     @rv_uri.path += "/rv"
 
     vr = Chariwt::VoucherRequest.new(:format => :cose_cbor)
     vr.generate_nonce
@@ -453,7 +461,7 @@ class Pledge
     vr.signing_cert = PledgeKeys.instance.idevid_pubkey
     vr.serialNumber = vr.eui64_from_cert
     vr.createdOn    = Time.now
-    vr.proximityRegistrarCert = client.peer_cert
+#     vr.proximityRegistrarCert = client.peer_cert
     cose = vr.cose_sign(PledgeKeys.instance.idevid_privkey)
 
     if saveto
@@ -462,35 +470,37 @@ class Pledge
       end
     end
 
-    # set block size bigger.
-    client.max_payload = 1024
+    exit 99  # @@
 
-    # host=nil, port=nil to get preset values above.
-    # payload = cose
-    # then options...
-    response = client.post(@rv_uri, nil, nil, cose,
-                           {:content_format => 'application/cose; cose-type="cose-sign"'})
-
-    voucher = nil
-    case
-    when response.mcode[0] == 5
-      raise VoucherRequest::BadMASA
-
-    when response.mcode == [2,5]
-      ct = response.options[:content_format]
-      puts "MASA provided voucher of type #{ct}"
-      voucher = process_constrained_content_type(ct, response.payload)
-      if voucher
-        if saveto
-          File.open("tmp/voucher_#{voucher.serialNumber}.vch", "wb") do |f|
-            f.syswrite response.payload
-          end
-        end
-      else
-        nil
-      end
-    end
-    voucher
+#     # set block size bigger.
+#     client.max_payload = 1024
+#
+#     # host=nil, port=nil to get preset values above.
+#     # payload = cose
+#     # then options...
+#     response = client.post(@rv_uri, nil, nil, cose,
+#                            {:content_format => 'application/cose; cose-type="cose-sign"'})
+#
+#     voucher = nil
+#     case
+#     when response.mcode[0] == 5
+#       raise VoucherRequest::BadMASA
+#
+#     when response.mcode == [2,5]
+#       ct = response.options[:content_format]
+#       puts "MASA provided voucher of type #{ct}"
+#       voucher = process_constrained_content_type(ct, response.payload)
+#       if voucher
+#         if saveto
+#           File.open("tmp/voucher_#{voucher.serialNumber}.vch", "wb") do |f|
+#             f.syswrite response.payload
+#           end
+#         end
+#       else
+#         nil
+#       end
+#     end
+#     voucher
   end
 
   def get_constrained_enroll(saveto = nil)
